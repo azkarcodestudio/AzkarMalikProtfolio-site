@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Services</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/TextPlugin.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: #0a0a0f;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 10;
+        }
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+           width: 10px; 
+        }
+        ::-webkit-scrollbar-track {
+            background: rgb(5, 24, 26); 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0b867e; 
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #05d4ca; 
+        }
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .bg-element {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            filter: blur(40px);
+            background: radial-gradient(circle, rgba(0, 219, 222, 0.3) 0%, rgba(13, 118, 120, 0.1) 70%, transparent 100%);
+        }
+        .code-line {
+            position: absolute;
+            color: rgba(0, 219, 222, 0.1);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        .floating-icon {
+            position: absolute;
+            font-size: 24px;
+            color: rgba(0, 219, 222, 0.15);
+            opacity: 0.3;
+        }
+        .grid-line {
+            position: absolute;
+            background: rgba(0, 219, 222, 0.05);
+        }
+        .grid-line.horizontal {
+            width: 100%;
+            height: 1px;
+        }
+        .grid-line.vertical {
+            width: 1px;
+            height: 100%;
+        }
+        .pulse-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 219, 222, 0.1);
+            opacity: 0;
+        }
+        
+        /* Header Styles */
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 20;
+        }
+        .section-header .home{
+            position: relative;
+            font-size: 33px;
+            left: -600px;
+            background: linear-gradient(90deg, transparent, #0D7678, transparent);
+        }
+        .home a{
+            text-decoration: none;
+            color: #ffffff;
+        }
+        .section-title{
+            text-align:center;
+            margin: 60px 0;
+            position: relative;
+            text-align: center;
+        }
+        .section-title h2{
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #fff;
+            position: relative;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+        .section-title h2 span{
+            color: #0D7678;
+            position: relative;
+        }
+        .section-title h2::after{
+            content:'';
+            position:absolute;
+            width:80%;
+            height:3px;
+            background: linear-gradient(90deg, transparent, #0D7678, transparent);
+            left:50%;
+            bottom:-12px;
+            transform:translateX(-50%);
+        }
+        .section-title h2::before{
+            content:'';
+            position:absolute;
+            width:12px;
+            height:12px;
+            background:#0D7678;
+            border-radius:50%;
+            left:89%;
+            bottom:-16px;
+            transform:translateX(-50%);
+            box-shadow: 0 0 15px #07b1b4;
+        }
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #a0a0c0;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 50px;
+            position: relative;
+            z-index: 20;
+        }
+        .service-card {
+            background: rgba(18, 42, 44, 0.8);
+            border-radius: 20px;
+            padding: 30px 25px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 1;
+            height: 100%;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 219, 222, 0.05) 0%, rgba(13, 118, 120, 0.05) 100%);
+            z-index: -1;
+        }
+        .service-card::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00dbde, #0b2d31, #0D7678);
+            border-radius: 22px;
+            z-index: -2;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .service-icon-container {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+        .icon-wrapper {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 2rem;
+            color: #00dbde;
+            transition: all 0.3s ease;
+        }
+        .icon-rotation {
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        .service-card:hover .icon-rotation {
+            animation: rotate-continuous 2s linear infinite;
+        }
+        @keyframes rotate-continuous {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .service-card:nth-child(1):hover .icon-rotation {
+            animation: rotate-continuous 1.5s linear infinite;
+        }
+        .service-card:nth-child(2):hover .icon-rotation {
+            animation: rotate-continuous 2s linear infinite;
+        }
+        .service-card:nth-child(3):hover .icon-rotation {
+            animation: rotate-continuous 2.5s linear infinite;
+        }
+        .service-card:nth-child(4):hover .icon-rotation {
+            animation: rotate-continuous 1.8s linear infinite;
+        }
+        .service-card:nth-child(5):hover .icon-rotation {
+            animation: rotate-continuous 2.2s linear infinite;
+        }
+        .service-card:nth-child(6):hover .icon-rotation {
+            animation: rotate-continuous 1.7s linear infinite;
+        }
+        .service-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #fff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        .service-description {
+            color: #b0b0d0;
+            line-height: 1.7;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+        .service-features {
+            list-style: none;
+            margin-top: 20px;
+        }
+        .service-features li {
+            margin-bottom: 10px;
+            color: #a0a0c0;
+            position: relative;
+            padding-left: 24px;
+            font-size: 0.95rem;
+        }
+        .service-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00dbde;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .tech-item {
+            background: rgba(0, 219, 222, 0.1);
+            padding: 5px 14px;
+            border-radius: 18px;
+            font-size: 0.8rem;
+            color: #a0dfff;
+            border: 1px solid rgba(0, 219, 222, 0.2);
+        }
+        .service-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: linear-gradient(90deg, #00dbde, #0D7678);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-top: 25px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .service-cta:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #0D7678, #00dbde);
+            transition: all 0.4s ease;
+            z-index: -1;
+        }
+        .service-cta:hover:before {
+            width: 100%;
+        }
+        /* Section CTA */
+        .section-cta {
+            text-align: center;
+            margin-top: 100px;
+            position: relative;
+            z-index: 20;
+        }
+        .cta-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #00dbde 0%, #0D7678 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+        .cta-subtitle {
+            font-size: 1.1rem;
+            color: #a0a0c0;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+        .main-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 42px;
+            background: linear-gradient(90deg, #00dbde, #0D7678);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 8px 25px rgba(0, 219, 222, 0.3);
+        }
+        .main-cta:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #0D7678, #00dbde);
+            transition: all 0.4s ease;
+            z-index: -1;
+        }
+        .main-cta:hover:before {
+            width: 100%;
+        }
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            padding: 25px;
+            color: #666;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 20;
+        }
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2.2rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .service-card {
+                padding: 25px 20px;
+            }
+            
+            .cta-title {
+                font-size: 2rem;
+            }
+        }
+        /* Special Animation Classes */
+        .hidden {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        /* Interactive Hover Effects */
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            border-color: rgba(0, 219, 222, 0.2);
+        }
+        .service-card:hover::after {
+            opacity: 1;
+        }
+        .service-card:hover .icon-wrapper {
+            transform: scale(1.1);
+            background: rgba(0, 219, 222, 0.15);
+            color: #fff;
+            box-shadow: 0 0 25px rgba(0, 219, 222, 0.4);
+        }
+        .service-cta:hover, .main-cta:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 219, 222, 0.4);
+        }
+        /* Custom Cursor */
+        body {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='%2300dbde' stroke-width='2'/%3E%3C/svg%3E"), auto;
+        }
+        .service-card, .service-cta, .main-cta {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%230D7678' opacity='0.7'/%3E%3C/svg%3E"), pointer;
+        }
+        /* New Background Elements */
+        .binary-rain {
+            position: absolute;
+            color: rgba(0, 219, 222, 0.1);
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 219, 222, 0.1) 0%, rgba(13, 118, 120, 0.05) 70%, transparent 100%);
+            pointer-events: none;
+        }
+        .connection-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 219, 222, 0.2), transparent);
+        }
+        /* Rotation Control Panel */
+        .rotation-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .control-btn {
+            padding: 10px 20px;
+            background: rgba(0, 219, 222, 0.1);
+            color: #00dbde;
+            border: 1px solid #00dbde;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .control-btn:hover {
+            background: #00dbde;
+            color: #000;
+        }
+        .control-btn.active {
+            background: #00dbde;
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 219, 222, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg" id="animated-bg">
+        <!-- Grid lines will be generated by JavaScript -->
+        <!-- Floating shapes will be generated by JavaScript -->
+        <!-- Code lines will be generated by JavaScript -->
+        <!-- Icons will be generated by JavaScript -->
+    </div>
+    
+    <div class="container">
+        <!-- Section Header-------------------------------------------------------------------------------------------------- -->
+        <div class="section-header">
+            <h2 class="home"><a href="Portfolio indax.html">Home</a></h2>
+            <div class="section-title">
+                <h2><span>My</span>Services</h2>
+            </div>
+            <div class="title-underline"></div>
+            <p class="section-subtitle">I specialize in creating modern, interactive, and responsive experiences using the latest web technologies and design principles.</p>
+            
+            <!-- Rotation Controls--------------------------------------------------------------------------------------------- -->
+            <div class="rotation-controls">
+                <button class="control-btn active" id="rotation-on">Rotation ON</button>
+                <button class="control-btn" id="rotation-off">Rotation OFF</button>
+                <button class="control-btn" id="speed-slow">Slow Speed</button>
+                <button class="control-btn" id="speed-normal">Normal Speed</button>
+                <button class="control-btn" id="speed-fast">Fast Speed</button>
+            </div>
+        </div>
+        
+        <!-- Services Grid ----------------------------------------------------------------------------------------------------->
+        <div class="services-grid">
+            <!-- Service 1: HTML/CSS Development ------------------------------------------------------------------------>
+            <div class="service-card hidden" id="service-1">
+                <div class="service-icon-container">
+                    <div class="icon-wrapper">
+                        <i class="fab fa-html5 icon-rotation"></i>
+                    </div>
+                </div>
+                <h3 class="service-title">HTML/CSS Development</h3>
+                <p class="service-description">Building semantic, accessible, and responsive websites with clean HTML5 and modern CSS3 techniques including Flexbox and Grid.</p>
+                <ul class="service-features">
+                    <li>Semantic HTML5 Structure</li>
+                    <li>Responsive CSS Design</li>
+                    <li>CSS Flexbox & Grid Layouts</li>
+                    <li>Cross-Browser Compatibility</li>
+                </ul>
+                <div class="tech-stack">
+                    <span class="tech-item">HTML5</span>
+                    <span class="tech-item">CSS3</span>
+                    <span class="tech-item">SASS/SCSS</span>
+                    <span class="tech-item">Responsive</span>
+                </div>
+                <button class="service-cta">View Details <i class="fas fa-arrow-right"></i></button>
+            </div>
+            
+            <!-- Service 2: JavaScript Development------------------------------------------------------------------------------- -->
+            <div class="service-card " id="service-2">
+                <div class="service-icon-container">
+                    <div class="icon-wrapper">
+                        <i class="fab fa-js-square icon-rotation"></i>
+                    </div>
+                </div>
+                <h3 class="service-title">JavaScript Development</h3>
+                <p class="service-description">Creating interactive, dynamic web applications with modern JavaScript, DOM manipulation, and client-side functionality.</p>
+                <ul class="service-features">
+                    <li>ES6+ Modern JavaScript</li>
+                    <li>DOM Manipulation</li>
+                    <li>Async Programming</li>
+                    <li>API Integration</li>
+                </ul>
+                <div class="tech-stack">
+                    <span class="tech-item">JavaScript</span>
+                    <span class="tech-item">ES6+</span>
+                    <span class="tech-item">AJAX</span>
+                    <span class="tech-item">Fetch API</span>
+                </div>
+                <button class="service-cta">View Details <i class="fas fa-arrow-right"></i></button>
+            </div>
+            
+            <!-- Service 3: GSAP Animations ---------------------------------------------------------------------------------------->
+            <div class="service-card hidden" id="service-3">
+                <div class="service-icon-container">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-wave-square icon-rotation"></i>
+                    </div>
+                </div>
+                <h3 class="service-title">GSAP Animations</h3>
+                <p class="service-description">Creating smooth, high-performance animations and interactive experiences using the GreenSock Animation Platform (GSAP).</p>
+                <ul class="service-features">
+                    <li>Scroll-Triggered Animations</li>
+                    <li>Interactive UI Animations</li>
+                    <li>Timeline-Based Animations</li>
+                    <li>Performance Optimization</li>
+                </ul>
+                <div class="tech-stack">
+                    <span class="tech-item">GSAP</span>
+                    <span class="tech-item">ScrollTrigger</span>
+                    <span class="tech-item">Timeline</span>
+                    <span class="tech-item">Tween</span>
+                </div>
+                <button class="service-cta">View Details <i class="fas fa-arrow-right"></i></button>
+            </div>
+            
+            <!-- Service 4: Spline 3D Design-------------------------------------------------------------------------------- -->
+            <div class="service-card hidden" id="service-4">
+                <div class="service-icon-container">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-cube icon-rotation"></i>
+                    </div>
+                </div>
+                <h3 class="service-title">Spline 3D Design</h3>
+                <p class="service-description">Designing and integrating interactive 3D elements and scenes into websites using Spline for modern, immersive experiences.</p>
+                <ul class="service-features">
+                    <li>3D Scene Creation</li>
+                    <li>Interactive 3D Elements</li>
+                    <li>Web Integration</li>
+                    <li>Real-time Interactions</li>
+                </ul>
+                <div class="tech-stack">
+                    <span class="tech-item">Spline</span>
+                    <span class="tech-item">3D Design</span>
+                    <span class="tech-item">WebGL</span>
+                    <span class="tech-item">Interactive</span>
+                </div>
+                <button class="service-cta">View Details <i class="fas fa-arrow-right"></i></button>
+            </div>
+            
+            <!-- Service 5: Bootstrap Development-------------------------------------------------------------------------->
+            <div class="service-card hidden" id="service-5">
+                <div class="service-icon-container">
+                    <div class="icon-wrapper">
+                        <i class="fab fa-bootstrap icon-rotation"></i>
+                    </div>
+                </div>
+                <h3 class="service-title">Bootstrap Development</h3>
+                <p class="service-description">Building responsive, mobile-first websites quickly using Bootstrap framework with custom components and layouts.</p>
+                <ul class="service-features">
+                    <li>Bootstrap 5 Framework</li>
+                    <li>Responsive Grid System</li>
+                    <li>Custom Component Design</li>
+                    <li>Rapid Prototyping</li>
+                </ul>
+                <div class="tech-stack">
+                    <span class="tech-item">Bootstrap 5</span>
+                    <span class="tech-item">Grid System</span>
+                    <span class="tech-item">Components</span>
+                    <span class="tech-item">Responsive</span>
+                </div>
+                <button class="service-cta">View Details <i class="fas fa-arrow-right"></i></button>
+            </div>
+            
+            <!-- Service 6: UI Design & Sketching------------------------------------------------------------------------------------>
+            <div class="service-card hidden" id="service-6">
+                <div class="service-icon-container">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-pencil-alt icon-rotation"></i>
+                    </div>
+                </div>
+                <h3 class="service-title">UI Design & Sketching</h3>
+                <p class="service-description">Creating wireframes, mockups, and polished UI designs with a focus on user experience and visual aesthetics.</p>
+                <ul class="service-features">
+                    <li>Wireframing & Prototyping</li>
+                    <li>UI/UX Design Principles</li>
+                    <li>Visual Design & Editing</li>
+                    <li>Sketching & Concept Art</li>
+                </ul>
+                <div class="tech-stack">
+                    <span class="tech-item">Figma</span>
+                    <span class="tech-item">Adobe Creative</span>
+                    <span class="tech-item">Wireframing</span>
+                    <span class="tech-item">UI/UX</span>
+                </div>
+                <button class="service-cta">View Details <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+        
+        <!-- Section CTA ------------------------------------------------------------------------------------------->
+        <div class="section-cta">
+            <h2 class="cta-title">Let's Create Something Amazing</h2>
+            <p class="cta-subtitle">Ready to bring your ideas to life with cutting-edge frontend technologies and stunning design? Let's collaborate on your next project.</p>
+            <button class="main-cta" id="contact-btn">Start a Project <i class="fas fa-rocket"></i></button>
+        </div>
+        
+        <!-- Footer -->
+        <footer>
+            <p>© <span id="current-year">2023</span> My Portfolio. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">Frontend Developer specializing in HTML, CSS, JS, GSAP, Spline, Bootstrap, and Design</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize GSAP and animations
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            gsap.registerPlugin(ScrollTrigger, TextPlugin);
+            createAnimatedBackground();
+            initAnimations();
+
+            setupEventListeners();
+
+            setupRotationControls();
+        });
+        
+        // Create unique animated background
+        function createAnimatedBackground() {
+            const bgContainer = document.getElementById('animated-bg');
+            const colors = ['#00dbde', '#0D7678', '#0093E9', '#80D0C7'];
+            
+            // 1. Create floating shapes
+            for (let i = 0; i < 12; i++) {
+                const shape = document.createElement('div');
+                shape.className = 'floating-shape';
+                bgContainer.appendChild(shape);
+                
+                const size = Math.random() * 200 + 50;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                gsap.set(shape, {
+                    width: size,
+                    height: size,
+                    background: `radial-gradient(circle, ${color}20 0%, ${color}10 70%, transparent 100%)`,
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                });
+                
+                // Floating animation
+                gsap.to(shape, {
+                    x: Math.random() * 300 - 150,
+                    y: Math.random() * 300 - 150,
+                    duration: Math.random() * 15 + 15,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut"
+                });
+                
+                // Pulsing animation
+                gsap.to(shape, {
+                    scale: 1.3,
+                    opacity: 0.2,
+                    duration: Math.random() * 4 + 3,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut"
+                });
+            }
+            
+            // 2. Create grid lines
+            // Horizontal lines
+            for (let i = 0; i < 20; i++) {
+                const line = document.createElement('div');
+                line.className = 'grid-line horizontal';
+                bgContainer.appendChild(line);
+                
+                const topPosition = (i / 20) * 100;
+                
+                gsap.set(line, {
+                    top: `${topPosition}%`,
+                    left: '0%',
+                    opacity: 0.1
+                });
+                
+                // Animate opacity
+                gsap.to(line, {
+                    opacity: 0.3,
+                    duration: 3,
+                    repeat: -1,
+                    yoyo: true,
+                    delay: i * 0.2,
+                    ease: "sine.inOut"
+                });
+            }
+            
+            // Vertical lines
+            for (let i = 0; i < 20; i++) {
+                const line = document.createElement('div');
+                line.className = 'grid-line vertical';
+                bgContainer.appendChild(line);
+                
+                const leftPosition = (i / 20) * 100;
+                
+                gsap.set(line, {
+                    left: `${leftPosition}%`,
+                    top: '0%',
+                    opacity: 0.1
+                });
+                
+                // Animate opacity
+                gsap.to(line, {
+                    opacity: 0.3,
+                    duration: 3,
+                    repeat: -1,
+                    yoyo: true,
+                    delay: i * 0.2,
+                    ease: "sine.inOut"
+                });
+            }
+            
+            // 3. Create floating tech icons
+            const icons = ['<i class="fab fa-html5"></i>', '<i class="fab fa-css3-alt"></i>', '<i class="fab fa-js"></i>', 
+                          '<i class="fab fa-bootstrap"></i>', '<i class="fas fa-code"></i>', '<i class="fas fa-cube"></i>',
+                          '<i class="fas fa-palette"></i>', '<i class="fas fa-mobile-alt"></i>'];
+            
+            for (let i = 0; i < 15; i++) {
+                const icon = document.createElement('div');
+                icon.className = 'floating-icon';
+                icon.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+                bgContainer.appendChild(icon);
+                
+                gsap.set(icon, {
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    fontSize: `${Math.random() * 24 + 16}px`,
+                    opacity: 0.1
+                });
+                
+                // Floating animation
+                gsap.to(icon, {
+                    y: Math.random() * 100 - 50,
+                    x: Math.random() * 100 - 50,
+                    rotation: Math.random() * 360,
+                    duration: Math.random() * 20 + 15,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut"
+                });
+                
+                // Pulsing opacity
+                gsap.to(icon, {
+                    opacity: 0.3,
+                    duration: Math.random() * 5 + 3,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut"
+                });
+            }
+            
+            // 4. Create code lines (binary rain effect)
+            for (let i = 0; i < 30; i++) {
+                const codeLine = document.createElement('div');
+                codeLine.className = 'binary-rain';
+                codeLine.textContent = generateRandomCode();
+                bgContainer.appendChild(codeLine);
+                
+                const startX = Math.random() * 100;
+                const fontSize = Math.random() * 12 + 10;
+                
+                gsap.set(codeLine, {
+                    left: `${startX}%`,
+                    top: '-10%',
+                    fontSize: `${fontSize}px`,
+                    opacity: 0
+                });
+                
+                // Falling animation
+                gsap.to(codeLine, {
+                    top: '110%',
+                    opacity: 0.7,
+                    duration: Math.random() * 15 + 10,
+                    delay: Math.random() * 5,
+                    repeat: -1,
+                    ease: "linear",
+                    onComplete: function() {
+                        codeLine.textContent = generateRandomCode();
+                        gsap.set(codeLine, { top: '-10%', opacity: 0 });
+                        this.restart();
+                    }
+                });
+            }
+            
+            // 5. Create connection lines between shapes
+            createConnectionLines();
+            
+            // 6. Create pulse rings
+            for (let i = 0; i < 8; i++) {
+                const ring = document.createElement('div');
+                ring.className = 'pulse-ring';
+                bgContainer.appendChild(ring);
+                
+                const size = Math.random() * 300 + 100;
+                
+                gsap.set(ring, {
+                    width: size,
+                    height: size,
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    borderColor: colors[Math.floor(Math.random() * colors.length)]
+                });
+                
+                // Pulse animation
+                gsap.to(ring, {
+                    width: size * 1.5,
+                    height: size * 1.5,
+                    opacity: 0.3,
+                    duration: 4,
+                    repeat: -1,
+                    delay: i * 0.5,
+                    ease: "power2.out",
+                    onComplete: function() {
+                        gsap.set(ring, { opacity: 0, width: size, height: size });
+                    }
+                });
+            }
+        }
+        
+        // Generate random code for binary rain effect
+        function generateRandomCode() {
+            const codeOptions = [
+                "function animate() { ... }",
+                "const element = document.getElementById();",
+                "gsap.to('.element', {duration: 1});",
+                "if (condition) { return true; }",
+                "for (let i = 0; i < 10; i++) { }",
+                "document.addEventListener('click', () => {});",
+                "CSS: transform: translateX(100px);",
+                "HTML: <div class='container'></div>",
+                "JavaScript: console.log('Hello');",
+                "Bootstrap: <div class='row'></div>",
+                "GSAP: gsap.registerPlugin(ScrollTrigger);",
+                "Spline: create3DScene();"
+            ];
+            
+            return codeOptions[Math.floor(Math.random() * codeOptions.length)];
+        }
+        
+        // Create connection lines between elements
+        function createConnectionLines() {
+            const bgContainer = document.getElementById('animated-bg');
+            const shapes = document.querySelectorAll('.floating-shape');
+            
+            // Create lines between some shapes
+            for (let i = 0; i < shapes.length - 1; i += 2) {
+                if (i + 1 >= shapes.length) break;
+                
+                const line = document.createElement('div');
+                line.className = 'connection-line';
+                bgContainer.appendChild(line);
+                
+                // Position line between two shapes
+                updateLinePosition(line, shapes[i], shapes[i + 1]);
+                
+                // Update line position on animation frame
+                gsap.ticker.add(() => {
+                    updateLinePosition(line, shapes[i], shapes[i + 1]);
+                });
+                
+                // Animate opacity
+                gsap.to(line, {
+                    opacity: 0.3,
+                    duration: 2,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut"
+                });
+            }
+        }
+        
+        // Update connection line position
+        function updateLinePosition(line, element1, element2) {
+            const rect1 = element1.getBoundingClientRect();
+            const rect2 = element2.getBoundingClientRect();
+            
+            const x1 = rect1.left + rect1.width / 2;
+            const y1 = rect1.top + rect1.height / 2;
+            const x2 = rect2.left + rect2.width / 2;
+            const y2 = rect2.top + rect2.height / 2;
+            
+            const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+            
+            gsap.set(line, {
+                width: length,
+                left: x1,
+                top: y1,
+                rotation: angle,
+                transformOrigin: '0% 0%'
+            });
+        }
+        
+        // Initialize all GSAP animations
+        function initAnimations() {
+            // Title animation
+            gsap.from('.section-title', {
+                duration: 1.3,
+                y: 80,
+                opacity: 0,
+                ease: "power4.out"
+            });
+            
+            // Title underline animation
+            gsap.from('.title-underline', {
+                duration: 1,
+                scaleX: 0,
+                transformOrigin: "center center",
+                ease: "power3.out",
+                delay: 0.3
+            });
+            
+            // Subtitle animation
+            gsap.from('.section-subtitle', {
+                duration: 1.3,
+                y: 40,
+                opacity: 0,
+                delay: 0.5,
+                ease: "power3.out"
+            });
+            
+            // Service cards animation
+            gsap.utils.toArray('.service-card').forEach((card, i) => {
+                // Initial hidden state
+                gsap.set(card, {
+                    opacity: 0,
+                    y: 60,
+                    rotationX: 10,
+                    transformPerspective: 800
+                });
+                
+                // Scroll-triggered animation
+                gsap.to(card, {
+                    opacity: 1,
+                    y: 0,
+                    rotationX: 0,
+                    duration: 0.9,
+                    delay: i * 0.08,
+                    ease: "back.out(1.2)",
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top 90%",
+                        toggleActions: "play none none reverse"
+                    },
+                    onComplete: () => {
+                        card.classList.remove('hidden');
+                    }
+                });
+                
+                // Add subtle floating animation to icons
+                const icon = card.querySelector('.icon-rotation');
+                gsap.to(icon, {
+                    rotation: 5,
+                    duration: 3,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut"
+                });
+                
+                // Hover animation for card
+                card.addEventListener('mouseenter', () => {
+                    gsap.to(card, {
+                        duration: 0.4,
+                        scale: 1.03,
+                        rotationY: 2,
+                        rotationX: -1,
+                        boxShadow: "0 20px 50px rgba(0, 0, 0, 0.4)",
+                        ease: "power2.out"
+                    });
+                    
+                    // Icon animation on hover
+                    const icon = card.querySelector('.icon-wrapper');
+                    gsap.to(icon, {
+                        duration: 0.5,
+                        scale: 1.2,
+                        ease: "back.out(1.7)"
+                    });
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card, {
+                        duration: 0.4,
+                        scale: 1,
+                        rotationY: 0,
+                        rotationX: 0,
+                        boxShadow: "0 8px 30px rgba(0, 0, 0, 0.2)",
+                        ease: "power2.out"
+                    });
+                    
+                    // Reset icon animation
+                    const icon = card.querySelector('.icon-wrapper');
+                    gsap.to(icon, {
+                        duration: 0.5,
+                        scale: 1,
+                        ease: "back.out(1.7)"
+                    });
+                });
+            });
+            
+            // CTA button animation
+            gsap.from('.main-cta', {
+                duration: 1,
+                scale: 0,
+                opacity: 0,
+                rotation: 180,
+                delay: 0.6,
+                ease: "back.out(1.7)",
+                scrollTrigger: {
+                    trigger: '.section-cta',
+                    start: "top 85%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+        }
+        
+        // Setup rotation controls
+        function setupRotationControls() {
+            const rotationOnBtn = document.getElementById('rotation-on');
+            const rotationOffBtn = document.getElementById('rotation-off');
+            const speedSlowBtn = document.getElementById('speed-slow');
+            const speedNormalBtn = document.getElementById('speed-normal');
+            const speedFastBtn = document.getElementById('speed-fast');
+            
+            // Rotation ON
+            rotationOnBtn.addEventListener('click', function() {
+                // Activate rotation for all icons
+                const icons = document.querySelectorAll('.icon-rotation');
+                icons.forEach(icon => {
+                    icon.style.animationPlayState = 'running';
+                });
+                
+                // Update button states
+                rotationOnBtn.classList.add('active');
+                rotationOffBtn.classList.remove('active');
+                
+                // Button animation
+                gsap.to(this, {
+                    scale: 1.1,
+                    duration: 0.2,
+                    yoyo: true,
+                    repeat: 1
+                });
+            });
+            
+            // Rotation OFF
+            rotationOffBtn.addEventListener('click', function() {
+                // Pause rotation for all icons
+                const icons = document.querySelectorAll('.icon-rotation');
+                icons.forEach(icon => {
+                    icon.style.animationPlayState = 'paused';
+                });
+                
+                // Update button states
+                rotationOffBtn.classList.add('active');
+                rotationOnBtn.classList.remove('active');
+                
+                // Button animation
+                gsap.to(this, {
+                    scale: 1.1,
+                    duration: 0.2,
+                    yoyo: true,
+                    repeat: 1
+                });
+            });
+            
+            // Speed Slow
+            speedSlowBtn.addEventListener('click', function() {
+                updateRotationSpeed(3); // 3 seconds per rotation
+                
+                // Update button states
+                speedSlowBtn.classList.add('active');
+                speedNormalBtn.classList.remove('active');
+                speedFastBtn.classList.remove('active');
+                
+                // Button animation
+                gsap.to(this, {
+                    scale: 1.1,
+                    duration: 0.2,
+                    yoyo: true,
+                    repeat: 1
+                });
+            });
+            
+            // Speed Normal
+            speedNormalBtn.addEventListener('click', function() {
+                updateRotationSpeed(2); // 2 seconds per rotation
+                
+                // Update button states
+                speedNormalBtn.classList.add('active');
+                speedSlowBtn.classList.remove('active');
+                speedFastBtn.classList.remove('active');
+                
+                // Button animation
+                gsap.to(this, {
+                    scale: 1.1,
+                    duration: 0.2,
+                    yoyo: true,
+                    repeat: 1
+                });
+            });
+            
+            // Speed Fast
+            speedFastBtn.addEventListener('click', function() {
+                updateRotationSpeed(1); // 1 second per rotation
+                
+                // Update button states
+                speedFastBtn.classList.add('active');
+                speedSlowBtn.classList.remove('active');
+                speedNormalBtn.classList.remove('active');
+                
+                // Button animation
+                gsap.to(this, {
+                    scale: 1.1,
+                    duration: 0.2,
+                    yoyo: true,
+                    repeat: 1
+                });
+            });
+            
+            // Function to update rotation speed
+            function updateRotationSpeed(duration) {
+                const cards = document.querySelectorAll('.service-card');
+                cards.forEach((card, index) => {
+                    // Update CSS animation duration
+                    const style = document.createElement('style');
+                    style.innerHTML = `
+                        .service-card:nth-child(${index + 1}):hover .icon-rotation {
+                            animation: rotate-continuous ${duration}s linear infinite;
+                        }
+                    `;
+                    
+                    // Remove existing style if any
+                    const existingStyle = document.getElementById(`rotation-speed-${index}`);
+                    if (existingStyle) {
+                        existingStyle.remove();
+                    }
+                    
+                    style.id = `rotation-speed-${index}`;
+                    document.head.appendChild(style);
+                });
+            }
+        }
+        
+        // Setup event listeners for buttons
+        function setupEventListeners() {
+            // Service card buttons
+            document.querySelectorAll('.service-cta').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const serviceCard = this.closest('.service-card');
+                    const serviceTitle = serviceCard.querySelector('.service-title').textContent;
+                    
+                    // Button click animation (Urdu style)
+                    gsap.to(this, {
+                        scale: 1.1,
+                        duration: 0.2,
+                        yoyo: true,
+                        repeat: 1
+                    });
+                    
+                    // Create ripple effect in background
+                    createBackgroundRipple(serviceCard);
+                    
+                    // Card highlight animation
+                    gsap.to(serviceCard, {
+                        boxShadow: "0 0 40px rgba(0, 219, 222, 0.5)",
+                        borderColor: "rgba(0, 219, 222, 0.5)",
+                        duration: 0.5,
+                        yoyo: true,
+                        repeat: 1
+                    });
+                    
+                    // Show service details
+                    showServiceDetails(serviceTitle);
+                });
+            });
+            
+            // Main CTA button
+            document.getElementById('contact-btn').addEventListener('click', function() {
+                // Button animation (Urdu style)
+                gsap.to(this, {
+                    scale: 1.1,
+                    duration: 0.2,
+                    yoyo: true,
+                    repeat: 1
+                });
+                
+                // Create a big ripple effect in background
+                createBackgroundRipple(this, true);
+                
+                // Show contact message
+                setTimeout(() => {
+                    alert("Let's connect! I'd love to discuss your frontend project requirements and how I can help bring your vision to life.");
+                }, 300);
+            });
+        }
+        
+        // Create ripple effect in background
+        function createBackgroundRipple(element, isLarge = false) {
+            const bgContainer = document.getElementById('animated-bg');
+            const ripple = document.createElement('div');
+            ripple.className = 'pulse-ring';
+            
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const size = isLarge ? 100 : 50;
+            
+            gsap.set(ripple, {
+                width: size,
+                height: size,
+                left: centerX - size/2,
+                top: centerY - size/2,
+                borderColor: '#00dbde',
+                opacity: 0.5
+            });
+            
+            bgContainer.appendChild(ripple);
+            
+            // Pulse animation
+            gsap.to(ripple, {
+                width: size * 3,
+                height: size * 3,
+                left: centerX - (size * 1.5),
+                top: centerY - (size * 1.5),
+                opacity: 0,
+                duration: 1.5,
+                ease: "power2.out",
+                onComplete: () => {
+                    bgContainer.removeChild(ripple);
+                }
+            });
+        }
+        
+        // Show service details
+        function showServiceDetails(serviceTitle) {
+            alert(`You selected: ${serviceTitle}\n\nI would be happy to provide more details about this service. Let's connect to discuss your specific requirements!`);
+            
+            // Highlight the selected card
+            const allCards = document.querySelectorAll('.service-card');
+            allCards.forEach(card => {
+                const title = card.querySelector('.service-title').textContent;
+                if (title === serviceTitle) {
+                    // Create a pulsing effect
+                    gsap.to(card, {
+                        y: -8,
+                        duration: 0.3,
+                        yoyo: true,
+                        repeat: 2,
+                        ease: "power2.inOut"
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
